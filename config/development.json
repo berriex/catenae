@@ -1,0 +1,15 @@
+{
+  "authenticator": {
+    "google": {
+      "clientID": "xxxxxxxxxxxxxxx-xxxxxxxxxxxxxxx.apps.googleusercontent.com",
+      "clientSecret": "xxxxxxxxxxxxxxx",
+      "callbackURL": "http://localhost:3000/auth/google/callback"
+    }
+  },
+  "env": {
+    "port": 3000
+  },
+  "database": {
+    "url": "mongodb://localhost/catena-dev"
+  }
+}
