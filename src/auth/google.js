@@ -1,6 +1,5 @@
-// var tokenValue = crypto.randomBytes(32).toString('hex');
-//
-//
+'use strict'
+
 var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var config = require('config');
@@ -20,7 +19,9 @@ var googleOAuth = app => {
               function(accessToken, refreshToken, profile, done) {
 
                 User.findOne({ provider: 'google', providerId: profile.id }, function (err, user) {
-                  if( err ) { return done(err, null); }
+                  if( err ) {
+                    return done(err, null);
+                  }
 
                   if( !user ){
                     var newuser = new User({
@@ -29,7 +30,9 @@ var googleOAuth = app => {
                          providerId: profile.id
                      });
                      newuser.save(function(err, u) {
-                         if (err) console.log(err);
+                         if (err){
+                           console.log(err);
+                         }
                          return done(err, u);
                      });
                   } else {
@@ -42,25 +45,20 @@ var googleOAuth = app => {
             );
 
 
-  app.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'], session: false  }));
+  app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false  }));
   app.get('/auth/google/callback',
-            passport.authenticate('google', { failureRedirect: '/', session: false }),
-            function( req, res, done){
+            passport.authenticate('google', { failureRedirect: '/auth/google', session: false }),
+            ( req, res, next) => {
               var tokenValue = crypto.randomBytes(32).toString('hex');
               var token = new AccessToken({
                   token: tokenValue,
                   userId: req.user.id
                 });
-                token.save(function(err, t){
-                  if (err){
-                    return done(err);
-                  }
-
-                  res.status(201).send({
-                    accessToken: t.token
-                  })
-                  return done();
-                });
+              token.save().then( (t) => {
+                return res.status(201).json({
+                  accessToken: t.token
+                })
+              });
 
             }
           );
