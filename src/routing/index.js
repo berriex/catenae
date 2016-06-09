@@ -3,7 +3,6 @@ var pkg = require('../../package.json');
 var auth = require('../auth/auth');
 
 module.exports = (app) => {
-
   app.get('/', (req, res) => {
     res.json({ 'app': pkg.name, 'ver': pkg.version});
   });
@@ -14,6 +13,4 @@ module.exports = (app) => {
       username: req.user.username
     });
   });
-
-
 }
