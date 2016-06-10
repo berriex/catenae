@@ -16,7 +16,7 @@ var googleOAuth = app => {
                 clientSecret: google.clientSecret,
                 callbackURL: google.callbackURL
               },
-              function(accessToken, refreshToken, profile, done) {
+              (accessToken, refreshToken, profile, done) => {
 
                 User.findOne({ provider: 'google', providerId: profile.id }, function (err, user) {
                   if( err ) {
@@ -29,17 +29,12 @@ var googleOAuth = app => {
                          provider: 'google',
                          providerId: profile.id
                      });
-                     newuser.save(function(err, u) {
-                         if (err){
-                           console.log(err);
-                         }
+                     newuser.save().then( u => {
                          return done(err, u);
                      });
                   } else {
                     return done(err, user);
                   }
-
-                  return done(err, user);
                 });
               })
             );
