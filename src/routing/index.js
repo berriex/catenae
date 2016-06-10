@@ -1,6 +1,10 @@
+'use strict'
+
 var passport = require('passport');
 var pkg = require('../../package.json');
 var auth = require('../auth/auth');
+
+let block = require('./block');
 
 module.exports = (app) => {
 
@@ -15,5 +19,6 @@ module.exports = (app) => {
     });
   });
 
+  block(app);
 
 }
