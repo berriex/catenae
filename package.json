@@ -14,11 +14,14 @@
     "passport-http-bearer": "^1.0.1"
   },
   "devDependencies": {
-    "eslint": "^2.11.1"
+    "chai": "^3.5.0",
+    "eslint": "^2.11.1",
+    "mocha": "^2.5.3",
+    "superagent": "^2.0.0"
   },
   "scripts": {
     "lint": "./node_modules/.bin/eslint **/*.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha test/**/*.js",
     "start": "node index.js"
   },
   "engines": {
