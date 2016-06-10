@@ -8,6 +8,7 @@ var config = require('config');
 
 var strategies = require('./auth/strategies');
 var googleOAuth = require('./auth/google');
+var githubAuth = require('./auth/github');
 var routing = require('./routing');
 var db = require('./db');
 
@@ -27,7 +28,9 @@ var Server = {
 
     app.use(passport.initialize())
 
+    //TODO: get those funcs to auth/something
     googleOAuth(app);
+    githubAuth(app);
 
     routing(app);
 
