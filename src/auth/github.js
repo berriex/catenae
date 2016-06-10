@@ -16,7 +16,7 @@ var githubAuth  = app => {
     callbackURL: github.callbackURL
   },
   function(accessToken, refreshToken, profile, done) {
-    User.findOne({ provider: 'github', providerId: profile.id }, function (err, user) {
+    User.findOne({ provider: 'github', providerId: profile.id }, (err, user) => {
       if( err ) { return done(err, null); }
 
       if( !user ){
@@ -25,7 +25,7 @@ var githubAuth  = app => {
              provider: 'github',
              providerId: profile.id
          });
-         newuser.save(function(err, u) {
+         newuser.save((err, u) => {
              if (err) console.log(err);
              return done(err, u);
          });
@@ -41,13 +41,13 @@ var githubAuth  = app => {
 app.get('/auth/github', passport.authenticate('github', { scope : ['user:email'], session: false  }));
 app.get('/auth/github/callback',
           passport.authenticate('github', { failureRedirect: '/', session: false }),
-          function( req, res, done){
+          ( req, res, done) =>{
             var tokenValue = crypto.randomBytes(32).toString('hex');
             var token = new AccessToken({
                 token: tokenValue,
                 userId: req.user.id
               });
-              token.save(function(err, t){
+              token.save((err, t) =>{
                 if (err){
                   return done(err);
                 }

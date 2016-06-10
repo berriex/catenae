@@ -1,9 +1,11 @@
+'use strict'
+
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var AccessToken = new Schema({
     userId: {
-        type: String,
+        type: Schema.ObjectId,
         required: true,
         ref: 'User'
     },

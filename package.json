@@ -13,8 +13,11 @@
     "passport-google-oauth": "^1.0.0",
     "passport-http-bearer": "^1.0.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^2.11.1"
+  },
   "scripts": {
+    "lint": "./node_modules/.bin/eslint **/*.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
