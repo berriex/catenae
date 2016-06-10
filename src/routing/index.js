@@ -7,7 +7,6 @@ var auth = require('../auth/auth');
 let block = require('./block');
 
 module.exports = (app) => {
-
   app.get('/', (req, res) => {
     res.json({ 'app': pkg.name, 'ver': pkg.version});
   });
@@ -20,5 +19,4 @@ module.exports = (app) => {
   });
 
   block(app);
-
 }

@@ -9,6 +9,7 @@ var config = require('config');
 
 var strategies = require('./src/auth/strategies');
 var googleOAuth = require('./src/auth/google');
+var githubAuth = require('./src/auth/github');
 var routing = require('./src/routing');
 
 
@@ -25,6 +26,7 @@ app.use(bodyParser.json());
 app.use(passport.initialize())
 
 googleOAuth(app);
+githubAuth(app);
 
 routing(app);
 
