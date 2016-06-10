@@ -31,7 +31,7 @@ routing(app);
 var env = config.get('env');
 var dbconf = config.get('database');
 
-app.listen(env.port, function() {
+app.listen( process.env.PORT || env.port, function() {
   process.title = pkg.name
   console.log(`${pkg.name}-v${pkg.version} is listening on port ${env.port}!
     - CONFIG  : ./config/${process.env.NODE_ENV}.json
