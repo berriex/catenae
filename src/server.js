@@ -15,6 +15,7 @@ var db = require('./db');
 var Server = {
 
   start(){
+    /* istanbul ignore if */
     if( !process.env.NODE_ENV ){
       process.env.NODE_ENV = 'development';
     }
