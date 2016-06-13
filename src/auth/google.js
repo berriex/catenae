@@ -17,7 +17,7 @@ var googleOAuth = app => {
                 callbackURL: google.callbackURL
               },
               (accessToken, refreshToken, profile, done) => {
-
+                /* istanbul ignore next */
                 User.findOne({ provider: 'google', providerId: profile.id }, function (err, user) {
                   if( err ) {
                     return done(err, null);
@@ -43,7 +43,8 @@ var googleOAuth = app => {
   app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false  }));
   app.get('/auth/google/callback',
             passport.authenticate('google', { failureRedirect: '/auth/google', session: false }),
-            ( req, res, next) => {
+            /* istanbul ignore next */
+            function( req, res, done){
               var tokenValue = crypto.randomBytes(32).toString('hex');
               var token = new AccessToken({
                   token: tokenValue,

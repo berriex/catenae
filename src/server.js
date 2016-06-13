@@ -10,7 +10,9 @@ var strategies = require('./auth/strategies');
 var googleOAuth = require('./auth/google');
 var githubAuth = require('./auth/github');
 var routing = require('./routing');
+
 var db = require('./db');
+var app = express();
 
 var Server = {
 
@@ -23,7 +25,7 @@ var Server = {
 
     db.connect();
 
-    var app = express();
+
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
 
@@ -38,7 +40,7 @@ var Server = {
     var env = config.get('env');
     var dbconf = config.get('database');
 
-    app.listen( process.env.PORT || env.port, function() {
+    this.server = app.listen( process.env.PORT || env.port, function() {
       process.title = pkg.name
       // console.log(`${pkg.name}-v${pkg.version} is listening on port ${env.port}!
       //   - CONFIG  : ./config/${process.env.NODE_ENV}.json
@@ -46,6 +48,11 @@ var Server = {
       //   - PID     : ${process.pid}
       //   `);
     });
+  },
+
+  close(){
+    db.close();
+    this.server.close();
   }
 
 }

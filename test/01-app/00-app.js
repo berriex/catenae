@@ -5,8 +5,8 @@ chai.should();
 var request = require('superagent');
 
 
-var server = require('../../src/server')
-var pkg = require('../../package.json')
+var server = require('../../src/server');
+var pkg = require('../../package.json');
 
 describe('App should work', () => {
 
@@ -24,5 +24,9 @@ describe('App should work', () => {
           res.body.ver.should.equal(pkg.version)
           return done();
       });
+  });
+
+  after( done => {
+    return done();
   });
 })
