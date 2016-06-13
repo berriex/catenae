@@ -15,6 +15,7 @@ var githubAuth  = app => {
     clientSecret: github.clientSecret,
     callbackURL: github.callbackURL
   },
+  /* istanbul ignore next */
   function(accessToken, refreshToken, profile, done) {
     User.findOne({ provider: 'github', providerId: profile.id }, (err, user) => {
       if( err ) { return done(err, null); }
@@ -41,7 +42,8 @@ var githubAuth  = app => {
 app.get('/auth/github', passport.authenticate('github', { scope : ['user:email'], session: false  }));
 app.get('/auth/github/callback',
           passport.authenticate('github', { failureRedirect: '/', session: false }),
-          ( req, res, done) =>{
+          /* istanbul ignore next */
+          function( req, res, done){
             var tokenValue = crypto.randomBytes(32).toString('hex');
             var token = new AccessToken({
                 token: tokenValue,
