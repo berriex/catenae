@@ -1,0 +1,13 @@
+
+language: node_js
+node_js:
+  - "4.0.0"
+
+after_success:
+  - npm run-script coverage
+  
+deploy:
+  skip_cleanup: true
+  provider: surge
+  project: ./coverage/lcov-report/
+  domain: coverage.catenae-api.surge.sh
