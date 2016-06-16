@@ -24,5 +24,8 @@ echo "  - pre_start_nodejs: Adding Node.js version $ver binaries to path"
 _SHOW_SETUP_PATH_MESSAGES="true" setup_path_for_custom_node_version
 
 if [ -e "~/app-root/data/config/production.json" ]; then
+  echo "Copy config file"
   cp "~/app-root/data/config/production.json" "$OPENSHIFT_REPO_DIR/config/production.json"
+else
+  echo "Config file not found"
 fi
