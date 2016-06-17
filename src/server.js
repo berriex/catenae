@@ -40,7 +40,7 @@ var Server = {
     var env = config.get('env');
     var dbconf = config.get('database');
 
-    this.server = app.listen( process.env.PORT || env.port, function() {
+    this.server = app.listen( process.env.OPENSHIFT_NODEJS_PORT || env.port, function() {
       process.title = pkg.name
       console.log(`${pkg.name}-v${pkg.version} is listening on port ${env.port}!
         - CONFIG  : ./config/${process.env.NODE_ENV}.json
