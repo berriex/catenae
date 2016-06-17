@@ -39,10 +39,11 @@ var Server = {
 
     var env = config.get('env');
     var dbconf = config.get('database');
-
-    this.server = app.listen( process.env.OPENSHIFT_NODEJS_PORT || env.port, function() {
+    let port = process.env.OPENSHIFT_NODEJS_PORT || env.port;
+    let ip = env.OPENSHIFT_NODE4_IP || '127.0.0.1';
+    this.server = app.listen(port, ip, function() {
       process.title = pkg.name
-      console.log(`${pkg.name}-v${pkg.version} is listening on port ${env.port}!
+      console.log(`${pkg.name}-v${pkg.version} is listening on port ${port}!
         - CONFIG  : ./config/${process.env.NODE_ENV}.json
         - DBURL   : ${dbconf.url}
         - PID     : ${process.pid}
