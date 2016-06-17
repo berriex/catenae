@@ -5,6 +5,7 @@ var passport = require('passport');
 var pkg = require('../package.json');
 var bodyParser = require('body-parser');
 var config = require('config');
+var compress = require('compression');
 
 var strategies = require('./auth/strategies');
 var googleOAuth = require('./auth/google');
@@ -25,7 +26,7 @@ var Server = {
 
     db.connect();
 
-
+    app.use(compress());  
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json({type: 'application/*+json'}));
 
