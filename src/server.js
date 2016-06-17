@@ -41,6 +41,7 @@ var Server = {
     var dbconf = config.get('database');
     let port = process.env.OPENSHIFT_NODEJS_PORT || env.port;
     let ip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+    console.log(`try to start server on ${ip}:${port}`)
     this.server = app.listen(port, ip, function() {
       process.title = pkg.name
       console.log(`${pkg.name}-v${pkg.version} is listening on port ${port}!
