@@ -42,11 +42,11 @@ var Server = {
 
     this.server = app.listen( process.env.PORT || env.port, function() {
       process.title = pkg.name
-      // console.log(`${pkg.name}-v${pkg.version} is listening on port ${env.port}!
-      //   - CONFIG  : ./config/${process.env.NODE_ENV}.json
-      //   - DBURL   : ${dbconf.url}
-      //   - PID     : ${process.pid}
-      //   `);
+      console.log(`${pkg.name}-v${pkg.version} is listening on port ${env.port}!
+        - CONFIG  : ./config/${process.env.NODE_ENV}.json
+        - DBURL   : ${dbconf.url}
+        - PID     : ${process.pid}
+        `);
     });
   },
 
