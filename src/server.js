@@ -26,7 +26,7 @@ var Server = {
 
     db.connect();
 
-    app.use(compress());  
+    app.use(compress());
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json({type: 'application/*+json'}));
 
@@ -45,7 +45,10 @@ var Server = {
     console.log(`try to start server on ${ip}:${port}`)
     this.server = app.listen(port, ip, function() {
       process.title = pkg.name
+      var path = require('path');
+      var appDir = path.dirname(require.main.filename);
       console.log(`${pkg.name}-v${pkg.version} is listening on port ${port}!
+        - PATH    : ${appDir}
         - CONFIG  : ./config/${process.env.NODE_ENV}.json
         - DBURL   : ${dbconf.url}
         - PID     : ${process.pid}
