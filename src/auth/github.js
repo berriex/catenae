@@ -19,7 +19,13 @@ var githubAuth  = app => {
     passReqToCallback: true
   },
   /* istanbul ignore next */
-  function(accessToken, refreshToken, profile, done) {
+  function(request, accessToken, refreshToken, profile, done) {
+    console.log('accessToken');
+    console.log(accessToken);
+    console.log('refreshToken');
+    console.log(refreshToken);
+    console.log('profile');
+    console.log(profile);
     User.findOne({ provider: 'github', providerId: profile.id }, (err, user) => {
       if( err ) {
         return done(err, null);

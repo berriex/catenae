@@ -17,7 +17,7 @@ var googleOAuth = app => {
                 callbackURL: google.callbackURL,
                 passReqToCallback: true
               },
-              (accessToken, refreshToken, profile, done) => {
+              (request, accessToken, refreshToken, profile, done) => {
                 console.log('accessToken');
                 console.log(accessToken);
                 console.log('refreshToken');
