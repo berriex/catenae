@@ -28,6 +28,10 @@ var googleOAuth = app => {
                 console.log(profile);
                 /* istanbul ignore next */
                 User.findOne({ provider: 'google', providerId: profile.id }, function (err, user) {
+console.log( 'err' )
+console.log( err )
+console.log( 'user' )
+console.log( user )
                   if( err ) {
                     return done(err, null);
                   }
@@ -38,8 +42,14 @@ var googleOAuth = app => {
                          provider: 'google',
                          providerId: profile.id
                      });
-                     newuser.save().then( u => {
-                         return done(err, u);
+                     newuser.save( function(err, u){
+                       if( err ) {
+                         console.log( 'err' )
+                         console.log( err )
+                         return done(err, null);
+                       }
+
+                       return done(null, u);
                      });
                   } else {
                     return done(err, user);
