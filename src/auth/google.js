@@ -14,7 +14,8 @@ var googleOAuth = app => {
   passport.use(new GoogleStrategy({
                 clientID: google.clientID,
                 clientSecret: google.clientSecret,
-                callbackURL: google.callbackURL
+                callbackURL: google.callbackURL,
+                passReqToCallback: true
               },
               (accessToken, refreshToken, profile, done) => {
                 /* istanbul ignore next */
