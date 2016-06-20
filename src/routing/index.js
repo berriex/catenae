@@ -18,5 +18,11 @@ module.exports = (app) => {
     });
   });
 
+  app.get('/auth/error', auth.bearer(), (req, res) => {
+    res.json({
+      req: req
+    });
+  });
+
   block(app);
 }

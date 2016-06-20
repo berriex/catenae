@@ -14,9 +14,10 @@ var googleOAuth = app => {
   passport.use(new GoogleStrategy({
                 clientID: google.clientID,
                 clientSecret: google.clientSecret,
-                callbackURL: google.callbackURL
+                callbackURL: google.callbackURL,
+                passReqToCallback: true
               },
-              (accessToken, refreshToken, profile, done) => {
+              (request, accessToken, refreshToken, profile, done) => {
                 /* istanbul ignore next */
                 User.findOne({ provider: 'google', providerId: profile.id }, function (err, user) {
                   if( err ) {
@@ -29,8 +30,12 @@ var googleOAuth = app => {
                          provider: 'google',
                          providerId: profile.id
                      });
-                     newuser.save().then( u => {
-                         return done(err, u);
+                     newuser.save( function(err, u){
+                       if( err ) {
+                         return done(err, null);
+                       }
+
+                       return done(null, u);
                      });
                   } else {
                     return done(err, user);
@@ -42,7 +47,7 @@ var googleOAuth = app => {
 
   app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false  }));
   app.get('/auth/google/callback',
-            passport.authenticate('google', { failureRedirect: '/auth/google', session: false }),
+            passport.authenticate('google', { failureRedirect: '/auth/error', session: false }),
             /* istanbul ignore next */
             function( req, res, done){
               var tokenValue = crypto.randomBytes(32).toString('hex');

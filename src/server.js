@@ -5,6 +5,7 @@ var passport = require('passport');
 var pkg = require('../package.json');
 var bodyParser = require('body-parser');
 var config = require('config');
+var compress = require('compression');
 
 var strategies = require('./auth/strategies');
 var googleOAuth = require('./auth/google');
@@ -25,9 +26,9 @@ var Server = {
 
     db.connect();
 
-
-    app.use(bodyParser.urlencoded({ extended: true }));
-    app.use(bodyParser.json());
+    app.use(compress());
+    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(bodyParser.json({type: 'application/*+json'}));
 
     app.use(passport.initialize())
 
@@ -39,14 +40,21 @@ var Server = {
 
     var env = config.get('env');
     var dbconf = config.get('database');
-
-    this.server = app.listen( process.env.PORT || env.port, function() {
+    let port = process.env.OPENSHIFT_NODEJS_PORT || env.port;
+    let ip = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
+    this.server = app.listen(port, ip, function() {
       process.title = pkg.name
-      // console.log(`${pkg.name}-v${pkg.version} is listening on port ${env.port}!
-      //   - CONFIG  : ./config/${process.env.NODE_ENV}.json
-      //   - DBURL   : ${dbconf.url}
-      //   - PID     : ${process.pid}
-      //   `);
+      var path = require('path');
+      var appDir = path.dirname(require.main.filename);
+      //TODO use loglevel
+      if( process.env.NODE_ENV !== 'test' ){
+        console.log(`${pkg.name}-v${pkg.version} is listening on port ${port}!
+          - PATH    : ${appDir}
+          - CONFIG  : ./config/${process.env.NODE_ENV}.json
+          - DBURL   : ${dbconf.url}
+          - PID     : ${process.pid}
+          `);
+      }
     });
   },
 

@@ -1,3 +1,5 @@
+'use strict'
+
 var passport = require('passport');
 var GitHubStrategy = require('passport-github2').Strategy;
 var config = require('config');
@@ -13,12 +15,15 @@ var githubAuth  = app => {
   passport.use(new GitHubStrategy({
     clientID: github.clientID,
     clientSecret: github.clientSecret,
-    callbackURL: github.callbackURL
+    callbackURL: github.callbackURL,
+    passReqToCallback: true
   },
   /* istanbul ignore next */
-  function(accessToken, refreshToken, profile, done) {
-    User.findOne({ provider: 'github', providerId: profile.id }, (err, user) => {
-      if( err ) { return done(err, null); }
+  function(request, accessToken, refreshToken, profile, done) {
+    User.findOne({ provider: 'github', providerId: profile.id }, function(err, user){
+      if( err ) {
+        return done(err, null);
+      }
 
       if( !user ){
         var newuser = new User({
@@ -27,7 +32,9 @@ var githubAuth  = app => {
              providerId: profile.id
          });
          newuser.save((err, u) => {
-             if (err) console.log(err);
+             if (err){
+               console.log(err);
+             }
              return done(err, u);
          });
       } else {
@@ -39,7 +46,7 @@ var githubAuth  = app => {
   }
 ));
 
-app.get('/auth/github', passport.authenticate('github', { scope : ['user:email'], session: false  }));
+app.get('/auth/github', passport.authenticate('github', { scope: ['user:email'], session: false  }));
 app.get('/auth/github/callback',
           passport.authenticate('github', { failureRedirect: '/', session: false }),
           /* istanbul ignore next */
