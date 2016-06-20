@@ -25,7 +25,7 @@ module.exports = (app) => {
     });
   });
 
-  app.get('/testdb', auth.bearer(), (req, res) => {
+  app.get('/testdb', (req, res) => {
     var u = new User();
     u.username = 'pippo';
     u.save( function(err, us){
