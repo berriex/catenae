@@ -42,7 +42,7 @@ var googleOAuth = app => {
 
   app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false  }));
   app.get('/auth/google/callback',
-            passport.authenticate('google', { failureRedirect: '/auth/google', session: false }),
+            passport.authenticate('google', { failureRedirect: '/auth/error', session: false }),
             /* istanbul ignore next */
             function( req, res, done){
               var tokenValue = crypto.randomBytes(32).toString('hex');
