@@ -3,6 +3,7 @@
 var passport = require('passport');
 var pkg = require('../../package.json');
 var auth = require('../auth/auth');
+var User = require('../models/User');
 
 let block = require('./block');
 
@@ -22,6 +23,15 @@ module.exports = (app) => {
     res.json({
       req: req
     });
+  });
+
+  app.get('/testdb', auth.bearer(), (req, res) => {
+    var u = new User();
+    u.username = 'pippo';
+    u.save( function(err, us){
+      res.send({user: us});
+    });
+
   });
 
   block(app);
