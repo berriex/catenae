@@ -18,20 +18,8 @@ var googleOAuth = app => {
                 passReqToCallback: true
               },
               (request, accessToken, refreshToken, profile, done) => {
-                console.log('request');
-                console.log(request);
-                console.log('accessToken');
-                console.log(accessToken);
-                console.log('refreshToken');
-                console.log(refreshToken);
-                console.log('profile');
-                console.log(profile);
                 /* istanbul ignore next */
                 User.findOne({ provider: 'google', providerId: profile.id }, function (err, user) {
-console.log( 'err' )
-console.log( err )
-console.log( 'user' )
-console.log( user )
                   if( err ) {
                     return done(err, null);
                   }
@@ -44,8 +32,6 @@ console.log( user )
                      });
                      newuser.save( function(err, u){
                        if( err ) {
-                         console.log( 'err' )
-                         console.log( err )
                          return done(err, null);
                        }
 

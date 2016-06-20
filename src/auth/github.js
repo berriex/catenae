@@ -20,13 +20,7 @@ var githubAuth  = app => {
   },
   /* istanbul ignore next */
   function(request, accessToken, refreshToken, profile, done) {
-    console.log('accessToken');
-    console.log(accessToken);
-    console.log('refreshToken');
-    console.log(refreshToken);
-    console.log('profile');
-    console.log(profile);
-    User.findOne({ provider: 'github', providerId: profile.id }, (err, user) => {
+    User.findOne({ provider: 'github', providerId: profile.id }, function(err, user){
       if( err ) {
         return done(err, null);
       }
