@@ -15,7 +15,8 @@ var githubAuth  = app => {
   passport.use(new GitHubStrategy({
     clientID: github.clientID,
     clientSecret: github.clientSecret,
-    callbackURL: github.callbackURL
+    callbackURL: github.callbackURL,
+    passReqToCallback: true
   },
   /* istanbul ignore next */
   function(accessToken, refreshToken, profile, done) {
