@@ -8,6 +8,7 @@
     "body-parser": "^1.15.1",
     "compression": "^1.6.2",
     "config": "^1.21.0",
+    "cors": "^2.7.1",
     "express": "^4.13.4",
     "mongoose": "^4.5.1",
     "passport": "^0.3.2",

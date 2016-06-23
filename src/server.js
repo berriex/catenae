@@ -6,7 +6,7 @@ var pkg = require('../package.json');
 var bodyParser = require('body-parser');
 var config = require('config');
 var compress = require('compression');
-
+var cors = require('cors')
 var strategies = require('./auth/strategies');
 var googleOAuth = require('./auth/google');
 var githubAuth = require('./auth/github');
@@ -26,11 +26,7 @@ var Server = {
 
     db.connect();
 
-    app.all('/', function(req, res, next) {
-      res.header('Access-Control-Allow-Origin', '*');
-      res.header('Access-Control-Allow-Headers', 'X-Requested-With');
-      next();
-     });
+    app.use(cors());
 
     app.use(compress());
     app.use(bodyParser.urlencoded({ extended: false }));
