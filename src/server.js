@@ -26,6 +26,12 @@ var Server = {
 
     db.connect();
 
+    app.all('/', function(req, res, next) {
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+      next();
+     });
+
     app.use(compress());
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json({type: 'application/*+json'}));
