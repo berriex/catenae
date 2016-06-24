@@ -50,6 +50,9 @@ var googleOAuth = app => {
             passport.authenticate('google', { failureRedirect: '/auth/error', session: false }),
             /* istanbul ignore next */
             function( req, res, done){
+              var rh = req.headers;
+              var rb = req.body;
+              var r2= res
               var tokenValue = crypto.randomBytes(32).toString('hex');
               var token = new AccessToken({
                   token: tokenValue,
@@ -57,7 +60,9 @@ var googleOAuth = app => {
                 });
               token.save().then( (t) => {
                 return res.status(201).json({
-                  accessToken: t.token
+                  accessToken: t.token,
+                  headers: rh,
+                  body: rb
                 })
               });
 
