@@ -60,7 +60,9 @@ var googleOAuth = app => {
                   userId: req.user.id
                 });
               token.save().then( (t) => {
-                return res.status(201).send('_callback({"accessToken": "'+t.accessToken+'"})')
+                return res.status(201).jsonp({
+                  accessToken: t.token
+                });
               });
 
             }
