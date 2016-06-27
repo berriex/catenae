@@ -18,6 +18,14 @@ var googleOAuth = app => {
                 passReqToCallback: true
               },
               (request, accessToken, refreshToken, profile, done) => {
+                console.log('request');
+                console.log(request);
+                console.log('accessToken');
+                console.log(accessToken);
+                console.log('refreshToken');
+                console.log(refreshToken);
+                console.log('profile');
+                console.log(profile);
                 /* istanbul ignore next */
                 User.findOne({ provider: 'google', providerId: profile.id }, function (err, user) {
                   if( err ) {
@@ -30,12 +38,8 @@ var googleOAuth = app => {
                          provider: 'google',
                          providerId: profile.id
                      });
-                     newuser.save( function(err, u){
-                       if( err ) {
-                         return done(err, null);
-                       }
-
-                       return done(null, u);
+                     newuser.save().then( u => {
+                         return done(err, u);
                      });
                   } else {
                     return done(err, user);
@@ -50,9 +54,6 @@ var googleOAuth = app => {
             passport.authenticate('google', { failureRedirect: '/auth/error', session: false }),
             /* istanbul ignore next */
             function( req, res, done){
-              var rh = req.headers;
-              var rb = req.body;
-              var r2= res
               var tokenValue = crypto.randomBytes(32).toString('hex');
               var token = new AccessToken({
                   token: tokenValue,
@@ -60,9 +61,7 @@ var googleOAuth = app => {
                 });
               token.save().then( (t) => {
                 return res.status(201).json({
-                  accessToken: t.token,
-                  headers: rh,
-                  body: rb
+                  accessToken: t.token
                 })
               });
 
