@@ -30,12 +30,8 @@ var googleOAuth = app => {
                          provider: 'google',
                          providerId: profile.id
                      });
-                     newuser.save( function(err, u){
-                       if( err ) {
-                         return done(err, null);
-                       }
-
-                       return done(null, u);
+                     newuser.save().then( u => {
+                         return done(err, u);
                      });
                   } else {
                     return done(err, user);
@@ -56,9 +52,9 @@ var googleOAuth = app => {
                   userId: req.user.id
                 });
               token.save().then( (t) => {
-                return res.status(201).json({
+                return res.status(201).jsonp({
                   accessToken: t.token
-                })
+                });
               });
 
             }

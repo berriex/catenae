@@ -56,14 +56,10 @@ app.get('/auth/github/callback',
                 token: tokenValue,
                 userId: req.user.id
               });
-              token.save((err, t) =>{
-                if (err){
-                  return done(err);
-                }
-                res.status(201).send({
+              token.save().then( (t) => {
+                return res.status(201).jsonp({
                   accessToken: t.token
-                })
-                return done();
+                });
               });
           });
 
