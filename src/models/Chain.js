@@ -3,7 +3,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var Block = new Schema({
+var Chain = new Schema({
   userId: {
     type: Schema.ObjectId,
     required: true,
@@ -18,4 +18,4 @@ var Block = new Schema({
   }
 });
 
-module.exports = mongoose.model('Block', Block);
+module.exports = mongoose.model('Chain', Chain);
