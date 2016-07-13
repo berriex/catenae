@@ -11,10 +11,16 @@ module.exports = (app) => {
     res.json({ 'app': pkg.name, 'ver': pkg.version});
   });
 
-  app.get('/whoami', auth.bearer(), (req, res) => {
+  app.get('/profile', auth.bearer(), (req, res) => {
     res.json({
       id: req.user.id,
       username: req.user.username
+    });
+  });
+
+  app.get('/auth/error', auth.bearer(), (req, res) => {
+    res.json({
+      req: req
     });
   });
 

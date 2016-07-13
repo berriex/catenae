@@ -14,14 +14,14 @@ module.exports = (app)=>{
   }
 
   var addChain = function(req, res){
-    if(!req.body.chain) return res.send(403, 'Chain not found!');
+    if(!req.body.chain) return res.status(404).send('Chain not found!');
     let newChain = new Chain(req.body.chain);
     newChain.userId = req.user._id;
     newChain.save().then(function(entity){
       console.info(entity);
       return res.status(201).send(entity);
     }).catch( function(err){
-      return res.status(500);
+      return res.status(500).send('Missing parameter');
     });
   }
 
@@ -34,8 +34,9 @@ module.exports = (app)=>{
   }
 
   var update = function(req, res){
+    if(!req.body.chain) return res.status(404).send('Chain not found!');
     Chain.findByIdAndUpdate(req.body.chain._id).exec().then(function(chain){
-      res.send(200).status('Updated');
+      res.send(201).status('Updated');
     }).catch(function(err){
       res.status(500).send('Fail Update');
     })

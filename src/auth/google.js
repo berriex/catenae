@@ -14,10 +14,11 @@ var googleOAuth = app => {
   passport.use(new GoogleStrategy({
                 clientID: google.clientID,
                 clientSecret: google.clientSecret,
-                callbackURL: google.callbackURL
+                callbackURL: google.callbackURL,
+                passReqToCallback: true
               },
-              (accessToken, refreshToken, profile, done) => {
-
+              (request, accessToken, refreshToken, profile, done) => {
+                /* istanbul ignore next */
                 User.findOne({ provider: 'google', providerId: profile.id }, function (err, user) {
                   if( err ) {
                     return done(err, null);
@@ -42,17 +43,18 @@ var googleOAuth = app => {
 
   app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false  }));
   app.get('/auth/google/callback',
-            passport.authenticate('google', { failureRedirect: '/auth/google', session: false }),
-            ( req, res, next) => {
+            passport.authenticate('google', { failureRedirect: '/auth/error', session: false }),
+            /* istanbul ignore next */
+            function( req, res, done){
               var tokenValue = crypto.randomBytes(32).toString('hex');
               var token = new AccessToken({
                   token: tokenValue,
                   userId: req.user.id
                 });
               token.save().then( (t) => {
-                return res.status(201).json({
+                return res.status(201).jsonp({
                   accessToken: t.token
-                })
+                });
               });
 
             }

@@ -4,21 +4,29 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "bluebird": "^3.4.0",
     "body-parser": "^1.15.1",
+    "compression": "^1.6.2",
     "config": "^1.21.0",
+    "cors": "^2.7.1",
     "express": "^4.13.4",
-    "mongoose": "^4.4.20",
+    "mongoose": "^4.5.1",
     "passport": "^0.3.2",
     "passport-github2": "^0.1.10",
     "passport-google-oauth": "^1.0.0",
     "passport-http-bearer": "^1.0.1"
   },
   "devDependencies": {
-    "eslint": "^2.11.1"
+    "chai": "^3.5.0",
+    "eslint": "^2.11.1",
+    "istanbul": "^0.4.3",
+    "mocha": "^2.5.3",
+    "superagent": "^2.0.0"
   },
   "scripts": {
+    "coverage": "export NODE_ENV=test && node_modules/.bin/istanbul cover -- ./node_modules/.bin/_mocha test/**/*.js",
     "lint": "./node_modules/.bin/eslint **/*.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "NODE_ENV=test ./node_modules/.bin/mocha test/**/*.js",
     "start": "node index.js"
   },
   "engines": {
