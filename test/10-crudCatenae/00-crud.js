@@ -11,6 +11,9 @@ var AccessToken = require('../../src/models/AccessToken')
 
 var user, token, invalidToken;
 
+var chainId = 5770d44f2e057af80f5a817c;
+var userId = 'aaa' //TODO
+
 describe('User shoud be authenticated', () => {
 
   before( done => {
@@ -64,24 +67,20 @@ describe('User shoud be authenticated', () => {
       });
   });
 
-  it('should accept a call with valid auth | post', (done) => {
+  it('should create a chain', (done) => {
     request
       .post('localhost:3000/v1/chain')
       .set('Authorization', 'Bearer ' + token.token)
       .send({"chain" : {"name":"Brian"}})
       .end(function(err, res){
-        res.statusCode.should.equal(200);
-        res.body[0].body.should.be.a('object');
-        res.body[0].should.have.property('chain');
-        res.body[0].chain.should.be.a('object');
-        res.body[0].chain.should.have.property('name');
-        res.body[0].chain.should.have.property('_id');
-        res.body[0].chain.id.should.be.not.empty;
+        res.statusCode.should.equal(201);
+        res.body.chain.name.should.equal('Brian');
+        res.body.chain.id.should.be.not.empty;
         return done();
       });
   });
 
-  it('should reject a call with unvalid auth | post', (done) => {
+  it('should reject a call create chain | post', (done) => {
     request
       .post('localhost:3000/v1/chain')
       .set('Authorization', 'Bearer INVALIDTOKEN')
@@ -151,7 +150,7 @@ describe('User shoud be authenticated', () => {
 
   it('should accept a call with valid auth | getSingle', (done) => {
     request
-      .get('localhost:3000/v1/chain')
+      .get('localhost:3000/v1/chain'+ chainId)
       .set('Authorization', 'Bearer ' + token.token)
       .send({"chain" : {'_id' : '5770d44f2e057af80f5a817c'}})
       .end(function(err, res){
@@ -246,7 +245,7 @@ describe('User shoud be authenticated', () => {
       .set('Authorization', 'Bearer ' + token.token)
       .send({"chain" : {'_id' : '5770d44f2e057af80f5a817c'}})
       .end(function(err, res){
-        res.body[0].should.have.status(200);
+        res.body[0].should.have.status(201);
         res.body[0].should.be.json;
         res.body[0].body.should.be.a('object');
         res.body[0].body.should.have.property('chain');

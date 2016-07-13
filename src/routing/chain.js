@@ -8,37 +8,17 @@ module.exports = (app) => {
   app.route('/v1/chain')
     .all( auth.bearer() )
 
-    .get( (req, res, next) => {
-      // res.json(Chain.getAll(req, res));
-      Chain.getAll(req, res).then(function(chain){
-        res.status(201).json(chain);
-      }).catch(function(err, message){
-        return res.status(err).send(message);
-      });
-      return next();
-    })
+    .get( Chain.getAll )
 
-    .post( (req, res, next) => {
-      res.json(Chain.addChain(req, res));
-      return next();
-    })
+    .post( Chain.addChain );
 
     // CHAIN CRUD SINGLE
   app.route('/v1/chain/:id')
     .all( auth.bearer() )
 
-    .get( (req, res, next) => {
-      res.json(Chain.getSingleChain(req, res));
-      return next();
-    })
+    .get( Chain.getSingleChain )
 
-    .put( (req, res, next) => {
-      res.json(Chain.update(req, res));
-      return next();
-    })
+    .put( Chain.update)
 
-    .delete( (req, res, next) => {
-      res.json(Chain.remove(req, res));
-      return next();
-    })
+    .delete( Chain.remove )
 }
