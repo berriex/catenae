@@ -7,23 +7,16 @@ var Promise = require('bluebird');
 
 var User = require('../../src/models/User')
 var AccessToken = require('../../src/models/AccessToken')
-// var server = require('../../src/server')
 
-var user, token, invalidToken;
-
-var chainId = 5770d44f2e057af80f5a817c;
-var userId = 'aaa' //TODO
+var user, token, invalidToken, chainId, userId;
 
 describe('User shoud be authenticated', () => {
-
   before( done => {
     var testuser = new User({
       username: 'test'
     })
     testuser.save().then( u => {
-
       user = u;
-
       var testtoken = new AccessToken({
           userId: user._id,
           token: 'QWERTYUIOPASDFGHJKLZXCVBNM'
@@ -33,12 +26,11 @@ describe('User shoud be authenticated', () => {
         token = t;
         var invalidUserToken = new AccessToken({
             userId: t._id, //just a mongoId
-            token: 'AAAAAAAAAAAAAAAAAAAAAAAA'
+            token: 'AAAAAAAAAAAAAAAAAAAAAAA'
         });
         invalidUserToken.save( function(err, t2){
           invalidToken = t2;
         });
-
         return done();
       })
     })
@@ -58,7 +50,7 @@ describe('User shoud be authenticated', () => {
   it('should reject a call with valid token but invalid user', (done) => {
     request
       .get('localhost:3000/profile')
-      .set('Authorization', 'Bearer '+invalidToken.token)
+      .set('Authorization', 'Bearer '+ invalidToken.token)
       .end(function(err, res){
         res.statusCode.should.equal(401);
         res.body.should.be.empty;
@@ -74,8 +66,9 @@ describe('User shoud be authenticated', () => {
       .send({"chain" : {"name":"Brian"}})
       .end(function(err, res){
         res.statusCode.should.equal(201);
-        res.body.chain.name.should.equal('Brian');
-        res.body.chain.id.should.be.not.empty;
+        res.body.name.should.equal('Brian');
+        res.body._id.should.be.not.empty;
+        chainId = res.body._id;
         return done();
       });
   });
@@ -99,7 +92,7 @@ describe('User shoud be authenticated', () => {
       .end(function(err, res){
         res.statusCode.should.equal(404);
         res.body.should.be.empty;
-        res.text.should.equal('Chain not found!');
+        res.text.should.equal('Missing property chain!');
         return done();
       });
   });
@@ -110,9 +103,9 @@ describe('User shoud be authenticated', () => {
       .set('Authorization', 'Bearer ' + token.token)
       .send({"chain" : {}})
       .end(function(err, res){
-        res.statusCode.should.equal(500);
+        res.statusCode.should.equal(404);
         res.body.should.be.empty;
-        res.text.should.equal('Missing parameter');
+        res.text.should.equal('Missing property name!');
         return done();
       });
   });
@@ -121,17 +114,13 @@ describe('User shoud be authenticated', () => {
     request
       .get('localhost:3000/v1/chain')
       .set('Authorization', 'Bearer ' + token.token)
+      .send({"chain" : {"id" : chainId }})
       .end(function(err, res){
-        res.should.have.status(201);
+        res.statusCode.should.equal(201);
         res.should.be.json;
-        res.body[0].body.should.be.a('object');
-        res.body[0].should.have.property('chain');
-        res.body[0].chain.be.a('object');
-        res.body[0].chain.should.have.property('_id');
-        res.body[0].chain.should.have.property('useId');
-        res.body[0].chain.should.have.property('name');
-        res.body[0].chain.should.have.property('created');
-        res.body[0].chain.id.should.be.not.empty;
+        res.body.should.be.a('object');
+        res.body.should.have.property('chains');
+        res.body.chains.should.be.instanceof(Array);
         return done();
       });
   });
@@ -150,34 +139,31 @@ describe('User shoud be authenticated', () => {
 
   it('should accept a call with valid auth | getSingle', (done) => {
     request
-      .get('localhost:3000/v1/chain'+ chainId)
+      .get('localhost:3000/v1/chain/'+ chainId)
       .set('Authorization', 'Bearer ' + token.token)
-      .send({"chain" : {'_id' : '5770d44f2e057af80f5a817c'}})
+      .send({"chain" : {'_id' : chainId}})
       .end(function(err, res){
-        res.should.have.status(201);
+        res.statusCode.should.equal(201);
         res.should.be.json;
-        res.body[0].body.should.be.a('object');
-        res.body[0].should.have.property('chain');
-        res.body[0].chain.be.a('object');
-        res.body[0].should.chain.have.property('_id');
-        res.body[0].should.chain.have.property('useId');
-        res.body[0].should.chain.have.property('name');
-        res.body[0].should.chain.have.property('created');
-        res.body[0]._id.should.equal('5770d44f2e057af80f5a817c');
-        res.body[0].chain._id.should.be.not.empty;
+        res.body.chain.should.have.property('_id');
+        res.body.chain.should.have.property('userId');
+        res.body.chain.should.have.property('name');
+        res.body.chain.should.have.property('created');
+        res.body.chain._id.should.equal(chainId);
+        res.body.chain._id.should.be.not.empty;
         return done();
       });
   });
 
   it('should reject a call with unvalid _id | getSingle', (done) => {
     request
-      .get('localhost:3000/v1/chain')
+      .get('localhost:3000/v1/chain/' + chainId)
       .set('Authorization', 'Bearer ' + token.token)
-      .send({"chain" : {'_id' : 'null'}})
+      .send({"chain" : {}})
       .end(function(err, res){
         res.statusCode.should.equal(404);
         res.body.should.be.empty;
-        res.text.should.equal('Chain not found!');
+        res.text.should.equal('Missing property _id');
         return done();
       });
   });
@@ -197,40 +183,35 @@ describe('User shoud be authenticated', () => {
 
   it('should reject a call with valid auth | put', (done) => {
     request
-      .put('localhost:3000/v1/chain')
+      .put('localhost:3000/v1/chain/' +chainId)
       .set('Authorization', 'Bearer ' + token.token)
-      .send({"chain" : {"name":"Brian"}})
+      .send({"chain" : {"_id": chainId, "name" : "Brian" }})
       .end(function(err, res){
-        res.body[0].should.have.status(201);
-        res.body[0].should.be.json;
-        res.body[0].body.should.be.a('object');
-        res.body[0].body.should.have.property('chain');
-        res.body[0].body.chain.should.be.a('object');
-        res.body[0].body.chain.should.have.property('name');
-        res.body[0].body.chain.name.should.have.property('Brian');
-        res.body[0].chain.id.should.be.not.empty;
+        res.statusCode.should.equal(201);
+        res.body.should.be.empty;
+        res.text.should.equal('Chain updated');
         return done();
       });
   });
 
   it('should reject a call with unvalid _id | put', (done) => {
     request
-      .put('localhost:3000/v1/chain')
+      .put('localhost:3000/v1/chain/'+chainId)
       .set('Authorization', 'Bearer ' + token.token)
-      .send({"chain" : {"name":"Brian"}})
+      .send({"chain" : {}})
       .end(function(err, res){
         res.statusCode.should.equal(404);
         res.body.should.be.empty;
-        res.text.should.equal('Chain not found!');
+        res.text.should.equal('Missing property _id');
         return done();
       });
   });
 
   it('should reject a call with unvalid auth | put', (done) => {
     request
-      .put('localhost:3000/v1/chain')
+      .put('localhost:3000/v1/chain/'+chainId)
       .set('Authorization', 'Bearer INVALIDTOKEN')
-      .send({"chain" : {"name":"Brian"}})
+      .send({"chain" : {"_id": chainId}})
       .end(function(err, res){
         res.statusCode.should.equal(401);
         res.body.should.be.empty;
@@ -241,40 +222,45 @@ describe('User shoud be authenticated', () => {
 
   it('should reject a call with valid auth | delete', (done) => {
     request
-      .delete('localhost:3000/v1/chain')
+      .delete('localhost:3000/v1/chain/'+chainId)
       .set('Authorization', 'Bearer ' + token.token)
-      .send({"chain" : {'_id' : '5770d44f2e057af80f5a817c'}})
+      .send({"chain" : {'_id' : chainId}})
       .end(function(err, res){
-        res.body[0].should.have.status(201);
-        res.body[0].should.be.json;
-        res.body[0].body.should.be.a('object');
-        res.body[0].body.should.have.property('chain');
-        res.body[0].body.chain.should.be.a('object');
-        res.body[0].body.chain.should.have.property('name');
-        res.body[0].body.chain.should.have.property('_id');
-        res.body[0].body.chain.name.should.have.property('Brian');
-        res.body[0].body.chain._id.should.have.property('5770d44f2e057af80f5a817c');
-        res.body[0].chain._id.should.be.not.empty;
+        res.statusCode.should.equal(201);
+        res.text.should.equal('Chain remove');
         return done();
       });
   });
 
   it('should reject a call with unvalid _id | delete', (done) => {
     request
-      .delete('localhost:3000/v1/chain')
+      .delete('localhost:3000/v1/chain/'+chainId)
       .set('Authorization', 'Bearer ' + token.token)
-      .send({"chain" : {'_id' : 'null'}})
+      .send()
       .end(function(err, res){
         res.statusCode.should.equal(404);
         res.body.should.be.empty;
-        res.text.should.equal('Chain not found!');
+        res.text.should.equal('Missing property chain!');
+        return done();
+      });
+  });
+
+  it('should reject a call with unvalid _id | delete', (done) => {
+    request
+      .delete('localhost:3000/v1/chain/'+chainId)
+      .set('Authorization', 'Bearer ' + token.token)
+      .send({"chain" : {}})
+      .end(function(err, res){
+        res.statusCode.should.equal(404);
+        res.body.should.be.empty;
+        res.text.should.equal('Missing property _id');
         return done();
       });
   });
 
   it('should reject a call with unvalid auth | delete', (done) => {
     request
-      .delete('localhost:3000/v1/chain')
+      .delete('localhost:3000/v1/chain/'+chainId)
       .set('Authorization', 'Bearer INVALIDTOKEN')
       .send({"chain" : {'_id' : 'null'}})
       .end(function(err, res){
@@ -294,4 +280,4 @@ describe('User shoud be authenticated', () => {
       return done();
     });
   });
-})
+});
