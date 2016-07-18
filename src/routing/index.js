@@ -4,7 +4,7 @@ var passport = require('passport');
 var pkg = require('../../package.json');
 var auth = require('../auth/auth');
 
-let block = require('./block');
+let chain = require('./chain');
 
 module.exports = (app) => {
   app.get('/', (req, res) => {
@@ -24,5 +24,5 @@ module.exports = (app) => {
     });
   });
 
-  block(app);
+  chain(app);
 }
