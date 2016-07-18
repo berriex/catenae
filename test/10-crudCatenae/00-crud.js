@@ -7,6 +7,7 @@ var Promise = require('bluebird');
 
 var User = require('../../src/models/User')
 var AccessToken = require('../../src/models/AccessToken')
+var Chain = require('../../src/models/Chain')
 
 var user, token, invalidToken, chainId, userId;
 
@@ -234,7 +235,7 @@ describe('User shoud be authenticated', () => {
 
   it('should reject a call with unvalid _id | delete', (done) => {
     request
-      .delete('localhost:3000/v1/chain/'+chainId)
+      .delete('localhost:3000/v1/chain/' + chainId)
       .set('Authorization', 'Bearer ' + token.token)
       .send()
       .end(function(err, res){
@@ -247,7 +248,7 @@ describe('User shoud be authenticated', () => {
 
   it('should reject a call with unvalid _id | delete', (done) => {
     request
-      .delete('localhost:3000/v1/chain/'+chainId)
+      .delete('localhost:3000/v1/chain/' + chainId)
       .set('Authorization', 'Bearer ' + token.token)
       .send({"chain" : {}})
       .end(function(err, res){

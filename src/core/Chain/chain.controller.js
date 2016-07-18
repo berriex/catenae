@@ -3,6 +3,8 @@ var mongoose = require('mongoose');
 
 module.exports = (app)=>{
 
+  'use strict';
+
   var getAll = function(req, res, next){
     Chain.find().exec().then(function(chain){
       res.status(201).send({'chains' : chain});
