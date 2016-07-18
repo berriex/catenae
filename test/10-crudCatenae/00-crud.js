@@ -10,6 +10,8 @@ var AccessToken = require('../../src/models/AccessToken')
 var Chain = require('../../src/models/Chain')
 
 var user, token, invalidToken, chainId, userId;
+// var chainId, userId;
+// var token = 'QWERTYUIOPASDFGHJKLZXCVBNM';
 
 describe('User shoud be authenticated', () => {
   before( done => {
@@ -35,29 +37,6 @@ describe('User shoud be authenticated', () => {
         return done();
       })
     })
-  });
-
-  it('should reject a call without auth', (done) => {
-    request
-      .get('localhost:3000/v1/chain')
-      .end(function(err, res){
-        res.statusCode.should.equal(401);
-        res.body.should.be.empty;
-        res.text.should.equal('Unauthorized');
-        return done();
-      });
-  });
-
-  it('should reject a call with valid token but invalid user', (done) => {
-    request
-      .get('localhost:3000/profile')
-      .set('Authorization', 'Bearer '+ invalidToken.token)
-      .end(function(err, res){
-        res.statusCode.should.equal(401);
-        res.body.should.be.empty;
-        res.text.should.equal('Unauthorized');
-        return done();
-      });
   });
 
   it('should create a chain', (done) => {
@@ -182,7 +161,7 @@ describe('User shoud be authenticated', () => {
       });
   });
 
-  it('should reject a call with valid auth | put', (done) => {
+  it('should accept a call with valid auth | put', (done) => {
     request
       .put('localhost:3000/v1/chain/' +chainId)
       .set('Authorization', 'Bearer ' + token.token)
@@ -221,13 +200,13 @@ describe('User shoud be authenticated', () => {
       });
   });
 
-  it('should reject a call with valid auth | delete', (done) => {
+  it('should deleted a call with valid auth | delete', (done) => {
     request
       .delete('localhost:3000/v1/chain/'+chainId)
       .set('Authorization', 'Bearer ' + token.token)
       .send({"chain" : {'_id' : chainId}})
       .end(function(err, res){
-        res.statusCode.should.equal(201);
+        res.statusCode.should.equal(200);
         res.text.should.equal('Chain remove');
         return done();
       });

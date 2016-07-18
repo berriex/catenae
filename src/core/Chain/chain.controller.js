@@ -32,7 +32,7 @@ module.exports = (app)=>{
     if(!req.body.chain) return res.status(404).send('Missing property chain!');
     if(!req.body.chain._id) return res.status(404).send('Missing property _id');
     Chain.findByIdAndRemove({'_id':req.body.chain._id}).exec().then(function (){
-        res.status(201).send("Chain remove");
+        res.status(200).send("Chain remove");
         return next();
     }).catch( function(err){
         res.status(500).send("Fail delete chain")
